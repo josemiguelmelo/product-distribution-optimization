@@ -9,31 +9,61 @@ import java.util.ArrayList;
 
 public class GeneticAlgorithm {
 
-    private Chromosome chromosome;
-
     private ArrayList<Factory> factories;
     private ArrayList<Store> stores;
+    private ArrayList<Chromosome> population;
 
 
     public GeneticAlgorithm(ArrayList<Integer> factoriesProduction, ArrayList<Integer> storesQuantity){
         factories = new ArrayList<Factory>();
         stores = new ArrayList<Store>();
+        population = new ArrayList<Chromosome>();
 
         initStores(storesQuantity);
 
         initFactories(factoriesProduction);
 
-        initChromosome();
+        initPopulation(5);
 
+        printPopulation();
 
-        System.out.println("Chromosome: ");
-        System.out.println(chromosome);
     }
 
-    public void initChromosome(){
+    private ArrayList<Factory> cloneFactoryArray(){
+        ArrayList<Factory> factoriesCloned = new ArrayList<Factory>();
+        for (Factory factory : this.factories) {
+            factoriesCloned.add(new Factory(factory.getCapacity(), factory.getPosition()));
+        }
+        return factoriesCloned;
+    }
+
+    private ArrayList<Store> cloneStoreArray(){
+        ArrayList<Store> storesCloned = new ArrayList<Store>();
+        for (Store store : this.stores) {
+            storesCloned.add(new Store(store.getRequiredQuantity(), store.getPosition()));
+        }
+        return storesCloned;
+    }
+
+    public void initPopulation(int size){
         int chromosomeSize = factories.size() * stores.size() * getMaxNumberBitsNeeded();
 
-        chromosome = new Chromosome(chromosomeSize, factories, stores);
+        for(int i = 0; i < size; i++)
+        {
+            population.add(new Chromosome(chromosomeSize, cloneFactoryArray(), cloneStoreArray()));
+        }
+    }
+
+    public void printPopulation()
+    {
+        int counter = 0;
+        for(Chromosome chromosome : population)
+        {
+            System.out.println("CHROMOSOME #" + counter);
+            counter++;
+            System.out.println(chromosome);
+        }
+
     }
 
 

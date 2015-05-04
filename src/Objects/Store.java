@@ -28,7 +28,21 @@ public class Store extends Individual{
         this.gene = gene;
     }
 
+    public int getSuppliedItemNumber() {
+        int res =  0;
 
+        if(gene == null){
+            return res;
+        }
+
+        for (int i = 0; i < gene.length; i++){
+            if(gene[i] == 1)
+            {
+                res += Math.pow(2, gene.length - i - 1);
+            }
+        }
+        return res;
+    }
 
     @Override
     public String toString(){

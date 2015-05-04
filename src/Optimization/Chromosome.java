@@ -17,7 +17,6 @@ public class Chromosome {
     ArrayList<Store> stores;
 
 
-
     public Chromosome(int size, ArrayList<Factory> factories, ArrayList<Store> stores){
         this.genes = new byte[size];
 
@@ -26,11 +25,9 @@ public class Chromosome {
 
         initChromosome();
 
+        System.out.println( Arrays.toString(genes));
         splitGenes();
 
-        System.out.println("Number Factories = " + factories.size());
-        System.out.println("Number Stores = " + stores.size());
-        printFactories();
     }
 
     public void printFactories(){
@@ -68,14 +65,42 @@ public class Chromosome {
         }
     }
 
+    public double getPenalty() {
+        double totalPenalty = 0.0;
+
+        for(Factory factory : factories) {
+            totalPenalty += factory.getPenalty();
+        }
+
+        return totalPenalty;
+    }
+
+    public double getFitness() {
+        double totalDistance = 0.0;
+
+        for(Factory factory : this.factories)
+        {
+            totalDistance += factory.getDistancesSum();
+        }
+
+        if(totalDistance != 0)
+        {
+            return (1/totalDistance) + this.getPenalty();
+        } else {
+            return 0 + this.getPenalty();
+        }
+
+    }
 
     @Override
     public String toString(){
-        String resultString = "";
-        for (byte gene : genes) {
-            resultString += Byte.toString(gene);
-        }
-        return resultString;
+        //printFactories();
+
+        System.out.println("Supplied: " + factories.get(0).getStores().get(0).getSuppliedItemNumber());
+
+        System.out.println("Fitness: " + this.getFitness());
+
+        return Arrays.toString(genes);
     }
 
 

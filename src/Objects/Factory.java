@@ -4,7 +4,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Factory extends Individual{
+public class Factory extends Individual {
 
     private int capacity;
 
@@ -12,10 +12,7 @@ public class Factory extends Individual{
 
     private byte[] gene;
 
-
-
-
-    public Factory(int capacity, Point position){
+    public Factory(int capacity, Point position) {
         super(position);
         this.capacity = capacity;
         this.stores = new ArrayList<Store>();
@@ -46,36 +43,65 @@ public class Factory extends Individual{
         this.gene = gene;
     }
 
-    private void copyStoresArray(ArrayList<Store> storesList){
+    private void copyStoresArray(ArrayList<Store> storesList) {
         stores.clear();
 
-        for(Store store : storesList){
+        for (Store store : storesList) {
             stores.add(new Store(store.getRequiredQuantity(), store.getPosition()));
         }
     }
 
+    public double getPenalty() {
+        double requiredProducts = 0.0;
 
-    public void splitStoresGenes(ArrayList<Store> storesList){
+        for(Store store : stores)
+        {
+            requiredProducts += store.getRequiredQuantity();
+        }
+
+        double penalty = this.capacity - requiredProducts;
+
+        System.out.println(penalty);
+
+        if(penalty < 0) {
+            return penalty;
+        } else {
+            return 0;
+        }
+
+    }
+
+
+    public void splitStoresGenes(ArrayList<Store> storesList) {
         copyStoresArray(storesList);
 
         int numByteStore = gene.length / stores.size();
 
         int currentPosition = 0;
 
-        for(int i = 0; i < stores.size(); i++){
+        for (int i = 0; i < stores.size(); i++) {
             stores.get(i).setGene(Arrays.copyOfRange(gene, currentPosition, currentPosition + numByteStore));
             currentPosition += numByteStore;
         }
     }
 
+    public double getDistanceToStore(Store store) {
 
+        return Math.sqrt(
+                Math.pow(this.getPosition().getX() - store.getPosition().getX(), 2) +
+                Math.pow(this.getPosition().getY() - store.getPosition().getY(), 2)
+        );
+
+    }
 
 
     @Override
-    public String toString(){
+    public String toString() {
         String resultString = "";
-        System.out.println("Stores genes: ");
-        for(Store store : stores){
+        int counter = 0;
+        for (Store store : stores) {
+            System.out.println("STORE #" + counter);
+            counter++;
             System.out.println(store);
         }
 
@@ -84,5 +110,17 @@ public class Factory extends Individual{
         }
 
         return resultString;
+    }
+
+    public double getDistancesSum() {
+        double distanceSum = 0.0;
+
+        for (Store store : this.stores) {
+            //TODO: Only add distance if fornecimento>0
+
+            distanceSum += this.getDistanceToStore(store);
+        }
+
+        return distanceSum;
     }
 }
