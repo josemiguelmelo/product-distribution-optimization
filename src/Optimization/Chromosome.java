@@ -16,6 +16,8 @@ public class Chromosome {
     ArrayList<Factory> factories;
     ArrayList<Store> stores;
 
+    public Chromosome()
+    {}
 
     public Chromosome(int size, ArrayList<Factory> factories, ArrayList<Store> stores){
         this.genes = new byte[size];

@@ -27,6 +27,10 @@ public class GeneticAlgorithm {
 
         printPopulation();
 
+        System.out.println("Fittest: " + getFittest().toString());
+        System.out.println("Fittest: " + getFittest().getFitness());
+
+
     }
 
     private ArrayList<Factory> cloneFactoryArray() {
@@ -93,6 +97,24 @@ public class GeneticAlgorithm {
 
             stores.add(store);
         }
+    }
+
+    public Chromosome getFittest() {
+        double bestFitness = 0.0;
+
+        Chromosome bestChromosome = new Chromosome();
+
+        for(Chromosome chromosome : this.population) {
+            double chromosomeFitness = chromosome.getFitness();
+
+            if(chromosomeFitness > bestFitness)
+            {
+                bestChromosome = chromosome;
+                bestFitness = chromosomeFitness;
+            }
+        }
+
+        return bestChromosome;
     }
 
 
