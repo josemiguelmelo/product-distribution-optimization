@@ -210,7 +210,7 @@ public class Population {
 
             Chromosome.crossover(c1, c2);
         }
-        
+
 
 
 
