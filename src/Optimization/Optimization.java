@@ -16,7 +16,7 @@ public class Optimization {
 
         ArrayList<Integer> quantities = new ArrayList<Integer>();
 
-        for(int i = 0; i < numStores; i++){
+        for(int i = 1; i <= numStores; i++){
             System.out.println("Required Quantity (Store #" + i + "): ");
             int quant = scan.nextInt();
 
@@ -31,7 +31,7 @@ public class Optimization {
 
         ArrayList<Integer> productions = new ArrayList<Integer>();
 
-        for(int i = 0; i < numFactories; i++){
+        for(int i = 1; i <= numFactories; i++){
             System.out.println("Production (Factory #" + i + "): ");
             int prod = scan.nextInt();
 
