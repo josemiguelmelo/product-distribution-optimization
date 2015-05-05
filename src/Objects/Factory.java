@@ -61,14 +61,16 @@ public class Factory extends Individual {
 
         double penalty = this.capacity - requiredProducts;
 
-        System.out.println(penalty);
 
         if(penalty < 0) {
             return penalty;
         } else {
             return 0;
         }
+    }
 
+    public int suppliedToStore(int storeIndex){
+        return stores.get(storeIndex).getSuppliedItemNumber();
     }
 
 
@@ -116,9 +118,10 @@ public class Factory extends Individual {
         double distanceSum = 0.0;
 
         for (Store store : this.stores) {
-            //TODO: Only add distance if fornecimento>0
-
-            distanceSum += this.getDistanceToStore(store);
+            if(store.getSuppliedItemNumber() != 0)
+            {
+                distanceSum += this.getDistanceToStore(store);
+            }
         }
 
         return distanceSum;

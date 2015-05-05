@@ -2,22 +2,24 @@ package Optimization;
 
 
 import Objects.Factory;
+import Objects.Population;
 import Objects.Store;
 
 import java.awt.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class GeneticAlgorithm {
 
     private ArrayList<Factory> factories;
     private ArrayList<Store> stores;
-    private ArrayList<Chromosome> population;
+    private Population population;
 
 
     public GeneticAlgorithm(ArrayList<Integer> factoriesProduction, ArrayList<Integer> storesQuantity) {
         factories = new ArrayList<Factory>();
         stores = new ArrayList<Store>();
-        population = new ArrayList<Chromosome>();
+        population = new Population();
 
         initStores(storesQuantity);
 
@@ -25,12 +27,12 @@ public class GeneticAlgorithm {
 
         initPopulation(5);
 
-        printPopulation();
+        population.printPopulation();
 
-        System.out.println("Fittest: " + getFittest().toString());
-        System.out.println("Fittest: " + getFittest().getFitness());
+        System.out.println("Fittest: " + population.getFittest().toString());
+        System.out.println("Fittest: " + population.getFittest().getFitness());
 
-
+        population.getNextPopulation();
     }
 
     private ArrayList<Factory> cloneFactoryArray() {
@@ -57,15 +59,6 @@ public class GeneticAlgorithm {
         }
     }
 
-    public void printPopulation() {
-        int counter = 0;
-        for (Chromosome chromosome : population) {
-            System.out.println("CHROMOSOME #" + counter);
-            counter++;
-            System.out.println(chromosome);
-        }
-
-    }
 
 
     public void initFactories(ArrayList<Integer> factoriesProduction) {
@@ -99,23 +92,6 @@ public class GeneticAlgorithm {
         }
     }
 
-    public Chromosome getFittest() {
-        double bestFitness = 0.0;
-
-        Chromosome bestChromosome = new Chromosome();
-
-        for(Chromosome chromosome : this.population) {
-            double chromosomeFitness = chromosome.getFitness();
-
-            if(chromosomeFitness > bestFitness)
-            {
-                bestChromosome = chromosome;
-                bestFitness = chromosomeFitness;
-            }
-        }
-
-        return bestChromosome;
-    }
 
 
     /**

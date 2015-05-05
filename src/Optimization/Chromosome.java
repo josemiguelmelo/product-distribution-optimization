@@ -5,16 +5,19 @@ import Objects.Store;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Random;
 
 public class Chromosome {
 
     private byte[] genes;
-    Random rand = new Random();
+    static Random rand = new Random();
 
 
     ArrayList<Factory> factories;
     ArrayList<Store> stores;
+
+    private double selectionProbability;
 
     public Chromosome()
     {}
@@ -32,6 +35,16 @@ public class Chromosome {
 
     }
 
+
+
+    public double getSelectionProbability(){
+        return this.selectionProbability;
+    }
+
+    public void calculateSelectionProbability(double totalPopulationFitness){
+        selectionProbability = getFitness()/totalPopulationFitness;
+    }
+
     public void printFactories(){
         int counter = 0;
         for(Factory factory : factories){
@@ -44,6 +57,7 @@ public class Chromosome {
     private int generateRandomValue(int min, int max){
         return rand.nextInt((max - min) + 1) + min;
     }
+
 
     public void initChromosome(){
         for (int i = 0; i < genes.length ; i++) {
@@ -67,6 +81,30 @@ public class Chromosome {
         }
     }
 
+    private ArrayList<Integer> getTotalQuantitiesSuppliedToStores(){
+        int numStores = stores.size();
+
+        ArrayList<Integer> supplyToStores = new ArrayList<>();
+
+        // init supplyToStores with quantity each store requires
+        for(int  i = 0; i < stores.size() ; i++){
+            supplyToStores.add(stores.get(i).getRequiredQuantity());
+        }
+
+        // calculate quantity supplied to each store
+        for(Factory factory : factories)
+        {
+            for(int i = 0; i < numStores; i++)
+            {
+                int suppliedToStore = factory.suppliedToStore(i);
+                int stillRequiredByStore = supplyToStores.get(i);
+                supplyToStores.set(i, stillRequiredByStore - suppliedToStore);
+            }
+        }
+
+        return supplyToStores;
+    }
+
     public double getPenalty() {
         double totalPenalty = 0.0;
 
@@ -74,8 +112,17 @@ public class Chromosome {
             totalPenalty += factory.getPenalty();
         }
 
+        ArrayList<Integer> supplyToStores = getTotalQuantitiesSuppliedToStores();
+
+        for(Integer quantity : supplyToStores){
+            if(quantity > 0) {
+                totalPenalty -= quantity;
+            }
+        }
+
         return totalPenalty;
     }
+
 
     public double getFitness() {
         double totalDistance = 0.0;
@@ -87,11 +134,36 @@ public class Chromosome {
 
         if(totalDistance != 0)
         {
-            return (1/totalDistance) + this.getPenalty();
+            return (1 / Math.pow(totalDistance + (1/this.getPenalty()), 2));
         } else {
-            return 0 + this.getPenalty();
+            return 0 + Math.pow(this.getPenalty(), 2);
         }
 
+    }
+
+
+    public byte[] getGenes(){ return this.genes; }
+
+    public void setGenes(byte[] genes){ this.genes = genes; }
+
+
+    public static void crossover(Chromosome c1, Chromosome c2){
+        int randomBit = rand.nextInt(c1.getGenes().length);
+
+        System.out.println("Cross bit: " + randomBit);
+        byte[] c1Genes = c1.getGenes();
+        byte[] c2Genes = c2.getGenes();
+
+        for(int i = 0; i < c1.getGenes().length; i++){
+            if(i > randomBit){
+                byte bit = c1Genes[i];
+                c1Genes[i] = c2Genes[i];
+                c2Genes[i] = bit;
+            }
+        }
+
+        c1.setGenes(c1Genes);
+        c2.setGenes(c2Genes);
     }
 
     @Override
