@@ -1,6 +1,8 @@
 package Objects;
 
 
+import Optimization.GeneticAlgorithm;
+
 import java.awt.*;
 
 public class Store extends Individual{
@@ -13,6 +15,13 @@ public class Store extends Individual{
     public Store(int requiredQuantity, Point position){
         super(position);
         this.requiredQuantity = requiredQuantity;
+    }
+
+    public Store clone(){
+        Store cloneStore = new Store(this.requiredQuantity, this.getPosition());
+        if(this.gene!= null)
+            cloneStore.setGene(GeneticAlgorithm.cloneByteArray(this.gene));
+        return cloneStore;
     }
 
     public int getRequiredQuantity(){ return this.requiredQuantity; }

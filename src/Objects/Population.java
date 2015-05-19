@@ -6,6 +6,7 @@ import com.sun.org.apache.bcel.internal.generic.ARRAYLENGTH;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 public class Population {
@@ -15,6 +16,7 @@ public class Population {
     private  double sumFittness;
 
     private double crossProbability;
+    private double mutationProbability;
 
     Random rand = new Random();
 
@@ -26,6 +28,15 @@ public class Population {
         this.population = new ArrayList<Chromosome>();
         this.elitism = 2;
         this.crossProbability = 0.75;
+        this.mutationProbability = 0.05;
+    }
+
+    public Population(ArrayList<Chromosome> population, int elitism, double crossProbability, double mutationProbability)
+    {
+        this.population = population;
+        this.elitism = elitism;
+        this.crossProbability = crossProbability;
+        this.mutationProbability = mutationProbability;
     }
 
 
@@ -33,9 +44,11 @@ public class Population {
     public void printPopulation() {
         int counter = 0;
         for (Chromosome chromosome : population) {
-            System.out.println("CHROMOSOME #" + counter);
+
+            System.out.println("CHROMO: " + Integer.toHexString(chromosome.hashCode()));
+            System.out.println("CHROMO: " + Integer.toHexString(chromosome.getGenes().hashCode()));
             counter++;
-            System.out.println(chromosome);
+            System.out.println(Arrays.toString(chromosome.getGenes()));
         }
 
     }
@@ -127,10 +140,6 @@ public class Population {
 
 
     public Population getNextPopulation(){
-        Population nextPopulation = new Population();
-
-
-
         // calculate population fitness sum
         calculateFitnessSum();
 
@@ -153,16 +162,14 @@ public class Population {
             numProbabilitiesCalculated++;
         }
 
-
-
-
         // get best elitism chromosomes
         ArrayList<Chromosome> bestChromosomes = new ArrayList<Chromosome>();
         for(int i = 1; i <= this.elitism; i++){
             Chromosome fittestChromosome = this.getFittest(i);
             bestChromosomes.add(fittestChromosome);
-            System.out.println(fittestChromosome);
         }
+
+        System.out.println("size after elitist: " + bestChromosomes.size());
 
 
 
@@ -177,14 +184,15 @@ public class Population {
         // selected population
         ArrayList<Chromosome> selectedPopulation = new ArrayList<Chromosome>();
         for(int i = 0; i < randomProbabilities.size(); i++){
-            for(int j = 0; j < sumProbabilities.size()-1; j++){
+            for(int j = 0; j < sumProbabilities.size(); j++){
                 if(j == 0){
                     if(randomProbabilities.get(i) < sumProbabilities.get(j)){
-                        selectedPopulation.add(population.get(j));
+
+                        selectedPopulation.add(population.get(j).clone());
                     }
                 }else{
                     if(randomProbabilities.get(i) > sumProbabilities.get(j-1) && randomProbabilities.get(i) < sumProbabilities.get(j)){
-                        selectedPopulation.add(population.get(j));
+                        selectedPopulation.add(population.get(j).clone());
                     }
                 }
             }
@@ -196,6 +204,9 @@ public class Population {
             randomProbabilities.add(generateRandomProbability());
         }
 
+        System.out.println("selected pop size: " + selectedPopulation.size());
+        System.out.println("random size: " + randomProbabilities.size());
+
         ArrayList<Integer> selectedForCrossPositions = new ArrayList<>();
         for(int i = 0; i < randomProbabilities.size(); i++){
             if(randomProbabilities.get(i) < crossProbability){
@@ -203,23 +214,56 @@ public class Population {
             }
         }
 
+        System.out.println("cross size: " + selectedForCrossPositions.size());
         // crossover
         for(int i = 0; i < selectedForCrossPositions.size()-1; i = i+2){
-            Chromosome c1 = selectedPopulation.get(i);
-            Chromosome c2 = selectedPopulation.get(i+1);
+            System.out.println("cross" + selectedForCrossPositions.get(i));
+            System.out.println("cross" + selectedForCrossPositions.get(i+1));
+            Chromosome c1 = selectedPopulation.get(selectedForCrossPositions.get(i));
+            Chromosome c2 = selectedPopulation.get(selectedForCrossPositions.get(i+1));
 
             Chromosome.crossover(c1, c2);
         }
 
+        for(int i = 0; i<bestChromosomes.size(); i++)
+        {
+            selectedPopulation.add(bestChromosomes.get(i));
+        }
 
+        System.out.println("size after crossover: " + selectedPopulation.size());
 
+        randomProbabilities.clear();
 
+        System.out.println(population.get(0).getGenes().length);
 
+        int geneSize = population.get(0).getGenes().length;
 
-        System.out.println(randomProbabilities);
-        System.out.println(sumProbabilities);
+        for(int i=0; i < (population.size() * geneSize); i++)
+        {
+            randomProbabilities.add(generateRandomProbability());
+        }
 
-        return nextPopulation;
+        for(int i=0; i<randomProbabilities.size(); i++)
+        {
+            if(randomProbabilities.get(i) < this.mutationProbability)
+            {
+                System.out.println("i: " + i);
+                System.out.println("size: " + selectedPopulation.size());
+                Chromosome chromosomeToMutate = selectedPopulation.get(i / geneSize);
+
+                int currentByte = chromosomeToMutate.getGenes()[i%geneSize];
+
+                if(currentByte == 1)
+                {
+                    chromosomeToMutate.getGenes()[i%geneSize] = 0;
+                } else {
+                    chromosomeToMutate.getGenes()[i%geneSize] = 1;
+                }
+            }
+        }
+
+        return new Population(selectedPopulation, this.elitism, this.crossProbability, this.mutationProbability);
+
     }
 
 

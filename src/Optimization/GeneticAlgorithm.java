@@ -25,28 +25,32 @@ public class GeneticAlgorithm {
 
         initFactories(factoriesProduction);
 
-        initPopulation(5);
-
+        initPopulation(20);
         population.printPopulation();
-
-        System.out.println("Fittest: " + population.getFittest().toString());
         System.out.println("Fittest: " + population.getFittest().getFitness());
 
-        population.getNextPopulation();
+
+        for(int i = 0; i < 10; i ++)
+        {
+            population = population.getNextPopulation();
+            population.printPopulation();
+            System.out.println("Fittest: " + population.getFittest().getFitness());
+        }
+
     }
 
-    private ArrayList<Factory> cloneFactoryArray() {
+    public static ArrayList<Factory> cloneFactoryArray(ArrayList<Factory> factories) {
         ArrayList<Factory> factoriesCloned = new ArrayList<Factory>();
-        for (Factory factory : this.factories) {
-            factoriesCloned.add(new Factory(factory.getCapacity(), factory.getPosition()));
+        for (Factory factory : factories) {
+            factoriesCloned.add(factory.clone());
         }
         return factoriesCloned;
     }
 
-    private ArrayList<Store> cloneStoreArray() {
+    public static ArrayList<Store> cloneStoreArray(ArrayList<Store> stores) {
         ArrayList<Store> storesCloned = new ArrayList<Store>();
-        for (Store store : this.stores) {
-            storesCloned.add(new Store(store.getRequiredQuantity(), store.getPosition()));
+        for (Store store : stores) {
+            storesCloned.add(store.clone());
         }
         return storesCloned;
     }
@@ -55,8 +59,14 @@ public class GeneticAlgorithm {
         int chromosomeSize = factories.size() * stores.size() * getMaxNumberBitsNeeded();
 
         for (int i = 0; i < size; i++) {
-            population.add(new Chromosome(chromosomeSize, cloneFactoryArray(), cloneStoreArray()));
+            population.add(new Chromosome(chromosomeSize, cloneFactoryArray(this.factories), cloneStoreArray(this.stores)));
         }
+    }
+
+    public static byte[] cloneByteArray(byte[] byteArray){
+        byte[] clonedByteArray = new byte[byteArray.length];
+        System.arraycopy(byteArray, 0, clonedByteArray, 0, byteArray.length);
+        return clonedByteArray;
     }
 
 

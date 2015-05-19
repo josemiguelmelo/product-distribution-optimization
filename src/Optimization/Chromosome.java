@@ -36,6 +36,36 @@ public class Chromosome {
     }
 
 
+    public ArrayList<Factory> getFactories() {
+        return factories;
+    }
+
+    public void setFactories(ArrayList<Factory> factories) {
+        this.factories = factories;
+    }
+
+    public ArrayList<Store> getStores() {
+        return stores;
+    }
+
+    public void setStores(ArrayList<Store> stores) {
+        this.stores = stores;
+    }
+
+    public void setSelectionProbability(double selectionProbability) {
+        this.selectionProbability = selectionProbability;
+    }
+
+    public Chromosome clone(){
+        Chromosome cloneChromosome = new Chromosome();
+        cloneChromosome.setGenes(GeneticAlgorithm.cloneByteArray(this.genes));
+        cloneChromosome.setFactories(GeneticAlgorithm.cloneFactoryArray(this.factories));
+        cloneChromosome.setSelectionProbability(this.selectionProbability);
+        cloneChromosome.setStores(GeneticAlgorithm.cloneStoreArray(this.stores));
+        return cloneChromosome;
+    }
+
+
 
     public double getSelectionProbability(){
         return this.selectionProbability;
@@ -99,6 +129,7 @@ public class Chromosome {
                 int suppliedToStore = factory.suppliedToStore(i);
                 int stillRequiredByStore = supplyToStores.get(i);
                 supplyToStores.set(i, stillRequiredByStore - suppliedToStore);
+                System.out.println(stillRequiredByStore - suppliedToStore);
             }
         }
 
@@ -164,6 +195,9 @@ public class Chromosome {
 
         c1.setGenes(c1Genes);
         c2.setGenes(c2Genes);
+        System.out.println("CROSSOVER FUNCTION:");
+        System.out.println(Integer.toHexString(c1.hashCode()));
+        System.out.println(Integer.toHexString(c2.hashCode()));
     }
 
     @Override

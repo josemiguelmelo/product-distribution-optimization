@@ -1,5 +1,7 @@
 package Objects;
 
+import Optimization.GeneticAlgorithm;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,6 +18,15 @@ public class Factory extends Individual {
         super(position);
         this.capacity = capacity;
         this.stores = new ArrayList<Store>();
+    }
+
+    public Factory clone(){
+        Factory cloneFactory = new Factory(this.capacity, this.getPosition());
+        cloneFactory.setStores(GeneticAlgorithm.cloneStoreArray(this.stores));
+        if(this.gene!= null)
+            cloneFactory.setGene(GeneticAlgorithm.cloneByteArray(this.gene));
+
+        return cloneFactory;
     }
 
 
@@ -95,7 +106,6 @@ public class Factory extends Individual {
         );
 
     }
-
 
     @Override
     public String toString() {
