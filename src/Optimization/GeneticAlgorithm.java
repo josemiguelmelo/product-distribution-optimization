@@ -8,6 +8,7 @@ import Objects.Store;
 import java.awt.*;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class GeneticAlgorithm {
 
@@ -25,16 +26,16 @@ public class GeneticAlgorithm {
 
         initFactories(factoriesProduction);
 
-        initPopulation(20);
-        population.printPopulation();
+        initPopulation(5);
         System.out.println("Fittest: " + population.getFittest().getFitness());
 
 
-        for(int i = 0; i < 10; i ++)
+        for(int i = 0; i < 5; i ++)
         {
             population = population.getNextPopulation();
-            population.printPopulation();
             System.out.println("Fittest: " + population.getFittest().getFitness());
+
+            System.out.println("\n----------- N E W P O P ------------\n");
         }
 
     }
@@ -64,8 +65,7 @@ public class GeneticAlgorithm {
     }
 
     public static byte[] cloneByteArray(byte[] byteArray){
-        byte[] clonedByteArray = new byte[byteArray.length];
-        System.arraycopy(byteArray, 0, clonedByteArray, 0, byteArray.length);
+        byte[] clonedByteArray = byteArray.clone();
         return clonedByteArray;
     }
 

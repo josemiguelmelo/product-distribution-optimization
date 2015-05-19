@@ -12,7 +12,7 @@ public class Factory extends Individual {
 
     private ArrayList<Store> stores;
 
-    private byte[] gene;
+    private String gene;
 
     public Factory(int capacity, Point position) {
         super(position);
@@ -23,8 +23,10 @@ public class Factory extends Individual {
     public Factory clone(){
         Factory cloneFactory = new Factory(this.capacity, this.getPosition());
         cloneFactory.setStores(GeneticAlgorithm.cloneStoreArray(this.stores));
+        String copyGene = null;
         if(this.gene!= null)
-            cloneFactory.setGene(GeneticAlgorithm.cloneByteArray(this.gene));
+            copyGene = this.gene;
+            cloneFactory.setGene(copyGene);
 
         return cloneFactory;
     }
@@ -46,11 +48,11 @@ public class Factory extends Individual {
         this.stores = stores;
     }
 
-    public byte[] getGene() {
+    public String getGene() {
         return gene;
     }
 
-    public void setGene(byte[] gene) {
+    public void setGene(String gene) {
         this.gene = gene;
     }
 
@@ -88,12 +90,12 @@ public class Factory extends Individual {
     public void splitStoresGenes(ArrayList<Store> storesList) {
         copyStoresArray(storesList);
 
-        int numByteStore = gene.length / stores.size();
+        int numByteStore = gene.length() / stores.size();
 
         int currentPosition = 0;
 
         for (int i = 0; i < stores.size(); i++) {
-            stores.get(i).setGene(Arrays.copyOfRange(gene, currentPosition, currentPosition + numByteStore));
+            stores.get(i).setGene(gene.substring(currentPosition, currentPosition + numByteStore));
             currentPosition += numByteStore;
         }
     }
@@ -117,9 +119,7 @@ public class Factory extends Individual {
             System.out.println(store);
         }
 
-        for (byte gene : this.gene) {
-            resultString += Byte.toString(gene);
-        }
+        resultString += this.gene;
 
         return resultString;
     }

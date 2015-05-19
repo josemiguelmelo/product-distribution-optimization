@@ -44,11 +44,9 @@ public class Population {
     public void printPopulation() {
         int counter = 0;
         for (Chromosome chromosome : population) {
-
-            System.out.println("CHROMO: " + Integer.toHexString(chromosome.hashCode()));
-            System.out.println("CHROMO: " + Integer.toHexString(chromosome.getGenes().hashCode()));
             counter++;
             System.out.println(Arrays.toString(chromosome.getGenes()));
+            System.out.println("Fitness: " + chromosome.getFitness());
         }
 
     }
@@ -140,6 +138,9 @@ public class Population {
 
 
     public Population getNextPopulation(){
+
+        System.out.println("---------- S T A R T N E X T P O P  ---------");
+
         // calculate population fitness sum
         calculateFitnessSum();
 
@@ -169,10 +170,10 @@ public class Population {
             bestChromosomes.add(fittestChromosome);
         }
 
-        System.out.println("size after elitist: " + bestChromosomes.size());
-
-
-
+        for(int i = 0; i<bestChromosomes.size(); i++)
+        {
+            System.out.println(bestChromosomes.get(i).toString());
+        }
 
         // generate generation with random values
         ArrayList<Double> randomProbabilities = new ArrayList<Double>();
@@ -180,6 +181,7 @@ public class Population {
             randomProbabilities.add(generateRandomProbability());
         }
 
+        System.out.println("---------- S E L E C T E D P O P ---------");
 
         // selected population
         ArrayList<Chromosome> selectedPopulation = new ArrayList<Chromosome>();
@@ -198,14 +200,18 @@ public class Population {
             }
         }
 
+        for(int i = 0; i<selectedPopulation.size(); i++)
+        {
+            System.out.println(selectedPopulation.get(i).toString());
+        }
+
+        System.out.println("---------- S E L E C T E D P O P A F T ER ---------");
+
         // generate generation with random values
         randomProbabilities.clear();
         for(int i = 0; i < sumProbabilities.size() - this.elitism; i++){
             randomProbabilities.add(generateRandomProbability());
         }
-
-        System.out.println("selected pop size: " + selectedPopulation.size());
-        System.out.println("random size: " + randomProbabilities.size());
 
         ArrayList<Integer> selectedForCrossPositions = new ArrayList<>();
         for(int i = 0; i < randomProbabilities.size(); i++){
@@ -214,11 +220,11 @@ public class Population {
             }
         }
 
-        System.out.println("cross size: " + selectedForCrossPositions.size());
+
+        System.out.println("---------- CR O S S O V E R ---------");
+
         // crossover
         for(int i = 0; i < selectedForCrossPositions.size()-1; i = i+2){
-            System.out.println("cross" + selectedForCrossPositions.get(i));
-            System.out.println("cross" + selectedForCrossPositions.get(i+1));
             Chromosome c1 = selectedPopulation.get(selectedForCrossPositions.get(i));
             Chromosome c2 = selectedPopulation.get(selectedForCrossPositions.get(i+1));
 
@@ -230,11 +236,7 @@ public class Population {
             selectedPopulation.add(bestChromosomes.get(i));
         }
 
-        System.out.println("size after crossover: " + selectedPopulation.size());
-
         randomProbabilities.clear();
-
-        System.out.println(population.get(0).getGenes().length);
 
         int geneSize = population.get(0).getGenes().length;
 
@@ -243,12 +245,13 @@ public class Population {
             randomProbabilities.add(generateRandomProbability());
         }
 
+
+        System.out.println("---------- M  U T A T I O N ---------");
+
         for(int i=0; i<randomProbabilities.size(); i++)
         {
             if(randomProbabilities.get(i) < this.mutationProbability)
             {
-                System.out.println("i: " + i);
-                System.out.println("size: " + selectedPopulation.size());
                 Chromosome chromosomeToMutate = selectedPopulation.get(i / geneSize);
 
                 int currentByte = chromosomeToMutate.getGenes()[i%geneSize];
@@ -261,6 +264,15 @@ public class Population {
                 }
             }
         }
+
+        System.out.println("----------- C O M P L E T E  P O P ------ ");
+
+        for(int i = 0; i<selectedPopulation.size(); i++)
+        {
+            System.out.println(selectedPopulation.get(i).toString());
+        }
+
+
 
         return new Population(selectedPopulation, this.elitism, this.crossProbability, this.mutationProbability);
 

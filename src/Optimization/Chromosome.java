@@ -29,8 +29,6 @@ public class Chromosome {
         this.stores = stores;
 
         initChromosome();
-
-        System.out.println( Arrays.toString(genes));
         splitGenes();
 
     }
@@ -62,6 +60,7 @@ public class Chromosome {
         cloneChromosome.setFactories(GeneticAlgorithm.cloneFactoryArray(this.factories));
         cloneChromosome.setSelectionProbability(this.selectionProbability);
         cloneChromosome.setStores(GeneticAlgorithm.cloneStoreArray(this.stores));
+        splitGenes();
         return cloneChromosome;
     }
 
@@ -102,8 +101,21 @@ public class Chromosome {
         int currentPosition = 0;
 
         // factories genes added
-        for(int i = 0; i < factories.size(); i++){
-            factories.get(i).setGene(Arrays.copyOfRange(genes, currentPosition, currentPosition + numBytes));
+        for(int i = 0; i < factories.size(); i++) {
+            byte[] splitGene = Arrays.copyOfRange(genes, currentPosition, currentPosition + numBytes);
+            String splitGeneString = "";
+            for(int j = 0; j<splitGene.length; j++)
+            {
+                if(splitGene[j] == 0)
+                {
+                    splitGeneString = splitGeneString + "0";
+                } else {
+                    splitGeneString = splitGeneString + "1";
+                }
+
+            }
+            System.out.println("Split gene string: " + splitGeneString);
+            factories.get(i).setGene(splitGeneString);
             currentPosition += numBytes;
 
             // set stores in factory i
@@ -129,7 +141,6 @@ public class Chromosome {
                 int suppliedToStore = factory.suppliedToStore(i);
                 int stillRequiredByStore = supplyToStores.get(i);
                 supplyToStores.set(i, stillRequiredByStore - suppliedToStore);
-                System.out.println(stillRequiredByStore - suppliedToStore);
             }
         }
 
@@ -163,9 +174,17 @@ public class Chromosome {
             totalDistance += factory.getDistancesSum();
         }
 
-        if(totalDistance != 0)
+        System.out.println("Total distance: " + totalDistance);
+        Double penalty = this.getPenalty();
+
+        System.out.println("Penalty: " + penalty);
+
+
+        if(totalDistance != 0 && penalty != 0)
         {
             return (1 / Math.pow(totalDistance + (1/this.getPenalty()), 2));
+        } else if (totalDistance != 0) {
+            return (1 / Math.pow(totalDistance, 2));
         } else {
             return 0 + Math.pow(this.getPenalty(), 2);
         }
@@ -181,7 +200,6 @@ public class Chromosome {
     public static void crossover(Chromosome c1, Chromosome c2){
         int randomBit = rand.nextInt(c1.getGenes().length);
 
-        System.out.println("Cross bit: " + randomBit);
         byte[] c1Genes = c1.getGenes();
         byte[] c2Genes = c2.getGenes();
 
@@ -195,20 +213,12 @@ public class Chromosome {
 
         c1.setGenes(c1Genes);
         c2.setGenes(c2Genes);
-        System.out.println("CROSSOVER FUNCTION:");
-        System.out.println(Integer.toHexString(c1.hashCode()));
-        System.out.println(Integer.toHexString(c2.hashCode()));
     }
 
     @Override
     public String toString(){
         //printFactories();
-
-        System.out.println("Supplied: " + factories.get(0).getStores().get(0).getSuppliedItemNumber());
-
-        System.out.println("Fitness: " + this.getFitness());
-
-        return Arrays.toString(genes);
+        return Arrays.toString(genes) + " - Fitness: " + this.getFitness();
     }
 
 

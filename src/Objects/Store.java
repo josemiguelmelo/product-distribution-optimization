@@ -4,12 +4,13 @@ package Objects;
 import Optimization.GeneticAlgorithm;
 
 import java.awt.*;
+import java.util.Arrays;
 
 public class Store extends Individual{
 
     private int requiredQuantity;
 
-    private byte[] gene;
+    private String gene;
 
 
     public Store(int requiredQuantity, Point position){
@@ -19,8 +20,14 @@ public class Store extends Individual{
 
     public Store clone(){
         Store cloneStore = new Store(this.requiredQuantity, this.getPosition());
+        String geneCopy = null;
         if(this.gene!= null)
-            cloneStore.setGene(GeneticAlgorithm.cloneByteArray(this.gene));
+        {
+            geneCopy = this.gene;
+            cloneStore.setGene(geneCopy);
+        }
+
+
         return cloneStore;
     }
 
@@ -29,36 +36,33 @@ public class Store extends Individual{
     public void setRequiredQuantity(int requiredQuantity){ this.requiredQuantity = requiredQuantity; }
 
 
-    public byte[] getGene() {
+    public String getGene() {
         return gene;
     }
 
-    public void setGene(byte[] gene) {
+    public void setGene(String gene) {
         this.gene = gene;
     }
 
     public int getSuppliedItemNumber() {
-        int res =  0;
+        int res = 0;
 
         if(gene == null){
             return res;
         }
 
-        for (int i = 0; i < gene.length; i++){
-            if(gene[i] == 1)
+        for (int i = 0; i < gene.length(); i++){
+            if(gene.charAt(i) == '1')
             {
-                res += Math.pow(2, gene.length - i - 1);
+                res += Math.pow(2, gene.length() - i - 1);
             }
         }
+        System.out.println("Supplied to store: " + res);
         return res;
     }
 
     @Override
     public String toString(){
-        String resultString = "";
-        for(byte gene : this.gene){
-            System.out.print(gene);
-        }
-        return resultString;
+        return gene;
     }
 }
