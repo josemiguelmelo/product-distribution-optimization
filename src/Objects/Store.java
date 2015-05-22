@@ -57,7 +57,6 @@ public class Store extends Individual{
                 res += Math.pow(2, gene.length() - i - 1);
             }
         }
-        System.out.println("Supplied to store: " + res);
         return res;
     }
 

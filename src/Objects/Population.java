@@ -189,11 +189,14 @@ public class Population {
             for(int j = 0; j < sumProbabilities.size(); j++){
                 if(j == 0){
                     if(randomProbabilities.get(i) < sumProbabilities.get(j)){
-
+                        System.out.println("Random: " + randomProbabilities.get(i));
+                        System.out.println("Sum: " + sumProbabilities.get(j));
                         selectedPopulation.add(population.get(j).clone());
                     }
                 }else{
                     if(randomProbabilities.get(i) > sumProbabilities.get(j-1) && randomProbabilities.get(i) < sumProbabilities.get(j)){
+                        System.out.println("Random: " + randomProbabilities.get(i));
+                        System.out.println("Sum: " + sumProbabilities.get(j));
                         selectedPopulation.add(population.get(j).clone());
                     }
                 }
@@ -229,6 +232,8 @@ public class Population {
             Chromosome c2 = selectedPopulation.get(selectedForCrossPositions.get(i+1));
 
             Chromosome.crossover(c1, c2);
+            c1.splitGenes();
+            c2.splitGenes();
         }
 
         for(int i = 0; i<bestChromosomes.size(); i++)
@@ -262,8 +267,11 @@ public class Population {
                 } else {
                     chromosomeToMutate.getGenes()[i%geneSize] = 1;
                 }
+                chromosomeToMutate.splitGenes();
             }
         }
+
+
 
         System.out.println("----------- C O M P L E T E  P O P ------ ");
 

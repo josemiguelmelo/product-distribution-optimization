@@ -27,10 +27,11 @@ public class GeneticAlgorithm {
         initFactories(factoriesProduction);
 
         initPopulation(5);
+        population.printPopulation();
         System.out.println("Fittest: " + population.getFittest().getFitness());
 
 
-        for(int i = 0; i < 5; i ++)
+        for(int i = 0; i < 50; i ++)
         {
             population = population.getNextPopulation();
             System.out.println("Fittest: " + population.getFittest().getFitness());

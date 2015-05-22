@@ -65,14 +65,14 @@ public class Factory extends Individual {
     }
 
     public double getPenalty() {
-        double requiredProducts = 0.0;
+        double totalSuppliedProducts = 0.0;
 
-        for(Store store : stores)
+        for(int i = 0; i < stores.size(); i++)
         {
-            requiredProducts += store.getRequiredQuantity();
+            totalSuppliedProducts += suppliedToStore(i);
         }
 
-        double penalty = this.capacity - requiredProducts;
+        double penalty = this.capacity - totalSuppliedProducts;
 
 
         if(penalty < 0) {

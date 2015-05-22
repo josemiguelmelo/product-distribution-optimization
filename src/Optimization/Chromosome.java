@@ -157,6 +157,7 @@ public class Chromosome {
         ArrayList<Integer> supplyToStores = getTotalQuantitiesSuppliedToStores();
 
         for(Integer quantity : supplyToStores){
+            //if quantity is greater than 0, the store is not getting enough products
             if(quantity > 0) {
                 totalPenalty -= quantity;
             }
@@ -174,19 +175,20 @@ public class Chromosome {
             totalDistance += factory.getDistancesSum();
         }
 
-        System.out.println("Total distance: " + totalDistance);
         Double penalty = this.getPenalty();
 
-        System.out.println("Penalty: " + penalty);
-
+        //
 
         if(totalDistance != 0 && penalty != 0)
         {
-            return (1 / Math.pow(totalDistance + (1/this.getPenalty()), 2));
+            return (1 /
+                    Math.pow(totalDistance - (-penalty + Math.pow(totalDistance, 2)), 2));
         } else if (totalDistance != 0) {
             return (1 / Math.pow(totalDistance, 2));
+        } else if (penalty != 0){
+            return 1/Math.pow(- (-penalty + Math.pow(totalDistance, 2)), 2);
         } else {
-            return 0 + Math.pow(this.getPenalty(), 2);
+            return 1;
         }
 
     }
