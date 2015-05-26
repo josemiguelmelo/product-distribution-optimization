@@ -177,22 +177,19 @@ public class Chromosome {
 
         Double penalty = this.getPenalty();
 
-        //
-
         if(totalDistance != 0 && penalty != 0)
         {
-            return (1 /
+            return (0.9 /
                     Math.pow(totalDistance - (-penalty + Math.pow(totalDistance, 2)), 2));
         } else if (totalDistance != 0) {
             return (1 / Math.pow(totalDistance, 2));
         } else if (penalty != 0){
-            return 1/Math.pow(- (-penalty + Math.pow(totalDistance, 2)), 2);
+            return 1/Math.pow(penalty, 2);
         } else {
             return 1;
         }
 
     }
-
 
     public byte[] getGenes(){ return this.genes; }
 
