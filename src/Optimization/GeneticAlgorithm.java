@@ -26,18 +26,25 @@ public class GeneticAlgorithm {
 
         initFactories(factoriesProduction);
 
-        initPopulation(5);
+        System.out.print("Population size: ");
+        int populationSize = Optimization.scan.nextInt();
+
+        System.out.print("How many generations? ");
+        int generations = Optimization.scan.nextInt();
+
+
+        initPopulation(populationSize);
         population.printPopulation();
-        System.out.println("Fittest: " + population.getFittest().getFitness());
+        System.out.println("Initial fittest: " + population.getFittest().getFitness());
 
-
-        for(int i = 0; i < 50; i ++)
+        for(int i = 0; i < generations; i ++)
         {
             population = population.getNextPopulation();
-            System.out.println("Fittest: " + population.getFittest().getFitness());
-
-            System.out.println("\n----------- N E W P O P ------------\n");
         }
+
+        System.out.println("\n\n");
+        population.printPopulation();
+        System.out.println("Final fittest: " + population.getFittest().getFitness());
 
     }
 
@@ -98,6 +105,7 @@ public class GeneticAlgorithm {
             int yPos = Optimization.scan.nextInt();
 
             Store store = new Store(quantity, new Point(xPos, yPos));
+            storesCounter++;
 
             stores.add(store);
         }

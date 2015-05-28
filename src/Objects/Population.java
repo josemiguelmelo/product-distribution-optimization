@@ -123,8 +123,6 @@ public class Population {
     }
 
     public void calculateAllPopulationSelectionProbability(){
-        System.out.println("Sum Fitness = " + sumFittness);
-
         for(Chromosome chromosome : population){
             chromosome.calculateSelectionProbability(sumFittness);
         }
@@ -138,8 +136,6 @@ public class Population {
 
 
     public Population getNextPopulation(){
-
-        System.out.println("---------- S T A R T N E X T P O P  ---------");
 
         // calculate population fitness sum
         calculateFitnessSum();
@@ -170,45 +166,27 @@ public class Population {
             bestChromosomes.add(fittestChromosome);
         }
 
-        for(int i = 0; i<bestChromosomes.size(); i++)
-        {
-            System.out.println(bestChromosomes.get(i).toString());
-        }
-
         // generate generation with random values
         ArrayList<Double> randomProbabilities = new ArrayList<Double>();
         for(int i = 0; i < sumProbabilities.size() - this.elitism; i++){
             randomProbabilities.add(generateRandomProbability());
         }
 
-        System.out.println("---------- S E L E C T E D P O P ---------");
-
         // selected population
         ArrayList<Chromosome> selectedPopulation = new ArrayList<Chromosome>();
-        for(int i = 0; i < randomProbabilities.size(); i++){
-            for(int j = 0; j < sumProbabilities.size(); j++){
-                if(j == 0){
-                    if(randomProbabilities.get(i) < sumProbabilities.get(j)){
-                        System.out.println("Random: " + randomProbabilities.get(i));
-                        System.out.println("Sum: " + sumProbabilities.get(j));
+        for(int i = 0; i < randomProbabilities.size(); i++) {
+            for (int j = 0; j < sumProbabilities.size(); j++) {
+                if (j == 0) {
+                    if (randomProbabilities.get(i) < sumProbabilities.get(j)) {
                         selectedPopulation.add(population.get(j).clone());
                     }
-                }else{
-                    if(randomProbabilities.get(i) > sumProbabilities.get(j-1) && randomProbabilities.get(i) < sumProbabilities.get(j)){
-                        System.out.println("Random: " + randomProbabilities.get(i));
-                        System.out.println("Sum: " + sumProbabilities.get(j));
+                } else {
+                    if (randomProbabilities.get(i) > sumProbabilities.get(j - 1) && randomProbabilities.get(i) < sumProbabilities.get(j)) {
                         selectedPopulation.add(population.get(j).clone());
                     }
                 }
             }
         }
-
-        for(int i = 0; i<selectedPopulation.size(); i++)
-        {
-            System.out.println(selectedPopulation.get(i).toString());
-        }
-
-        System.out.println("---------- S E L E C T E D P O P A F T ER ---------");
 
         // generate generation with random values
         randomProbabilities.clear();
@@ -222,9 +200,6 @@ public class Population {
                 selectedForCrossPositions.add(i);
             }
         }
-
-
-        System.out.println("---------- CR O S S O V E R ---------");
 
         // crossover
         for(int i = 0; i < selectedForCrossPositions.size()-1; i = i+2){
@@ -250,9 +225,6 @@ public class Population {
             randomProbabilities.add(generateRandomProbability());
         }
 
-
-        System.out.println("---------- M  U T A T I O N ---------");
-
         for(int i=0; i<randomProbabilities.size(); i++)
         {
             if(randomProbabilities.get(i) < this.mutationProbability)
@@ -270,17 +242,6 @@ public class Population {
                 chromosomeToMutate.splitGenes();
             }
         }
-
-
-
-        System.out.println("----------- C O M P L E T E  P O P ------ ");
-
-        for(int i = 0; i<selectedPopulation.size(); i++)
-        {
-            System.out.println(selectedPopulation.get(i).toString());
-        }
-
-
 
         return new Population(selectedPopulation, this.elitism, this.crossProbability, this.mutationProbability);
 

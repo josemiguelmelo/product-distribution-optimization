@@ -114,7 +114,6 @@ public class Chromosome {
                 }
 
             }
-            System.out.println("Split gene string: " + splitGeneString);
             factories.get(i).setGene(splitGeneString);
             currentPosition += numBytes;
 
