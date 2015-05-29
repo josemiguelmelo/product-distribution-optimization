@@ -27,8 +27,8 @@ public class Population {
     public Population(){
         this.population = new ArrayList<Chromosome>();
         this.elitism = 2;
-        this.crossProbability = 0.75;
-        this.mutationProbability = 0.05;
+        this.crossProbability = 0.50;
+        this.mutationProbability = 0.01;
     }
 
     public Population(ArrayList<Chromosome> population, int elitism, double crossProbability, double mutationProbability)

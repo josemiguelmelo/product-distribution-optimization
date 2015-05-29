@@ -176,17 +176,19 @@ public class Chromosome {
 
         Double penalty = this.getPenalty();
 
+        Double fitness;
+
         if(totalDistance != 0 && penalty != 0)
         {
-            return (0.9 /
-                    Math.pow(totalDistance - (-penalty + Math.pow(totalDistance, 2)), 2));
+            fitness = (0.9 /
+                    Math.pow(totalDistance + Math.pow(penalty, 2), 2));
         } else if (totalDistance != 0) {
-            return (1 / Math.pow(totalDistance, 2));
-        } else if (penalty != 0){
-            return 1/Math.pow(penalty, 2);
+            fitness = (1 / Math.pow(totalDistance, 2));
         } else {
-            return 1;
+            fitness = 0.0;
         }
+
+        return fitness * Math.pow(10, (this.stores.size() * this.factories.size())/2);
 
     }
 
